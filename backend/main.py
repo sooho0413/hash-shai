@@ -2,7 +2,7 @@ import os
 import json
 import asyncio
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -125,4 +125,23 @@ if __name__ == "__main__":
     import uvicorn
     # Cloud Run populates PORT env var
     port = int(os.environ.get("PORT", 8080))
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=port)
+
+# --- Static File Serving (Must be last) ---
+# Mount static assets (JS, CSS, Images)
+app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+
+# Catch-all route to serve index.html for client-side routing
+@app.get("/{full_path:path}")
+async def serve_spa(full_path: str):
+    # API requests are already handled above, so anything else is frontend
+    # Prevent conflict with API routes (though they are matched first usually)
+    if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("openapi.json"):
+         raise HTTPException(status_code=404, detail="Not Found")
+    
+    # Check if a specific file exists (e.g., favicon.ico), otherwise serve index.html
+    file_path = f"frontend/dist/{full_path}"
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path)
+    
+    return FileResponse("frontend/dist/index.html")
