@@ -1,0 +1,33 @@
+steps:
+  # 1. Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'asia-northeast3-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/shai-ai-service', '.']
+
+  # 2. Push the container image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-northeast3-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/shai-ai-service']
+
+  # 3. Deploy container to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'shai-ai-service'
+      - '--image'
+      - 'asia-northeast3-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/shai-ai-service'
+      - '--region'
+      - 'asia-northeast3'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      # Secrets are passed via build substitutions
+      - '--set-env-vars'
+      - 'GEMINI_API_KEY=${_GEMINI_API_KEY},FIREBASE_CREDENTIALS=${_FIREBASE_CREDENTIALS}'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _GEMINI_API_KEY: "CHANGE_ME_IN_TRIGGER_SETTINGS"
+  _FIREBASE_CREDENTIALS: "CHANGE_ME_IN_TRIGGER_SETTINGS"

@@ -1,0 +1,25 @@
+# Git
+.git
+.gitignore
+
+# Python
+backend/venv
+backend/__pycache__
+backend/*.pyc
+backend/*.safetensors
+backend/*.bin
+backend/model-*-of-*
+
+# Node
+frontend/node_modules
+frontend/dist
+
+# Env
+.env
+*.env
+serviceAccountKey.json
+
+# IDE
+.vscode
+.idea
+.DS_Store

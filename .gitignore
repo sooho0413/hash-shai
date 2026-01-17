@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Node
+node_modules/
+dist/
+.DS_Store
+
+# Secrets (CRITICAL)
+serviceAccountKey.json
+cloud_run_env.yaml
+.env
+firebase-debug.log
+
+# Large Local Model Files (DO NOT COMMIT)
+*.safetensors
+*.bin
+model.safetensors.index.json
+google-cloud-cli-*.tar.gz
+google-cloud-sdk/

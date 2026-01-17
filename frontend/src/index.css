@@ -1,0 +1,1212 @@
+:root {
+  /* White/Light Theme Variables */
+  --bg-color: #f8f9fa;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --primary-color: #000000;
+  --text-main: #333333;
+  --text-secondary: #666666;
+  --user-bubble-bg: #000000;
+  --user-text: #ffffff;
+  --ai-bubble-bg: #f3f3f3;
+  --ai-text: #333333;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f8f9fa;
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Chat Interface */
+.chat-interface {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.chat-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.chat-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.message {
+  display: flex;
+  gap: 16px;
+  max-width: 80%;
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message.assistant {
+  align-self: flex-start;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.user .avatar {
+  background: var(--user-bubble-bg);
+  color: white;
+}
+
+.assistant .avatar {
+  background: #ffffff;
+  border: 1px solid var(--glass-border);
+}
+
+.content {
+  padding: 14px 20px;
+  border-radius: 18px;
+  line-height: 1.6;
+  font-size: 0.98rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.user .content {
+  background: var(--user-bubble-bg);
+  color: var(--user-text);
+  border-bottom-right-radius: 4px;
+}
+
+.assistant .content {
+  background: var(--ai-bubble-bg);
+  color: var(--ai-text);
+  border-bottom-left-radius: 4px;
+}
+
+.friend .content {
+  background: var(--ai-bubble-bg);
+  color: var(--ai-text);
+  border-bottom-left-radius: 4px;
+}
+
+.input-area {
+  padding: 24px;
+  background: white;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  gap: 12px;
+}
+
+.input-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-input {
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 2px solid #eee;
+  background: #f8f9fa;
+  color: var(--text-main);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.chat-input:focus {
+  background: white;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.send-button {
+  background: var(--primary-color);
+  border: none;
+  border-radius: 14px;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.send-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.send-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Loading Animation - Circular */
+.loading-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loading-circle {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ddd;
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+}
+
+.loading-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDownEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* Markdown Styles */
+.content h1,
+.content h2,
+.content h3 {
+  margin-top: 0;
+}
+
+.content p {
+  margin: 0.5em 0;
+}
+
+.content code {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.content pre {
+  background: #2d2d2d;
+  color: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+/* Landing Page / Hero Section Styles */
+.hero-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
+  position: relative;
+  width: 100%;
+}
+
+.hero-logo {
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  height: 60px;
+  /* Adjusted size */
+  width: auto;
+  object-fit: contain;
+}
+
+.hero-profile {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-profile svg {
+  color: #666;
+}
+
+.greeting-area {
+  margin: 0 auto 40px auto;
+  text-align: left;
+  width: 100%;
+  max-width: 900px;
+  /* Transition for Greeting */
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.greeting-area.fade-out {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+.hero-input-container {
+  /* ... existing styles ... */
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  /* Smooth spring-like easing */
+}
+
+/* Move Down Animation for Messenger Mode */
+.hero-input-container.messenger-move-down {
+  transform: translateY(var(--target-translate-y, 40vh));
+  /* Use transform for performant movement */
+}
+
+/* Hide action buttons in messenger move down to simplify? Or just adjust */
+.hero-input-container.messenger-move-down .input-content-area {
+  padding: 10px 20px;
+}
+
+.greeting-text {
+  font-size: 2.2rem;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.greeting-highlight {
+  background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+  display: block;
+}
+
+.greeting-main {
+  color: #9aa0a6;
+  font-weight: 400;
+  display: block;
+}
+
+/* Central Input Box - Gemini Style */
+.hero-input-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  background: white;
+  border-radius: 28px;
+  border: 2px solid #e0e0e0;
+  padding: 0;
+  /* Clear padding, will use flex for structure */
+  display: flex;
+  flex-direction: column;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Taller init height */
+  min-height: 120px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 1px 10px rgba(0, 0, 0, 0.05);
+}
+
+.hero-input-container:focus-within {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-color: #d0d0d0;
+  background: white;
+}
+
+.input-content-area {
+  padding: 20px 24px 8px 24px;
+  flex: 1;
+}
+
+.hero-input {
+  width: 100%;
+  border: none;
+  font-size: 1.1rem;
+  outline: none;
+  color: #333;
+  background: transparent;
+  padding: 0;
+  line-height: 1.5;
+}
+
+.hero-input::placeholder {
+  color: #888;
+  font-weight: 400;
+}
+
+.input-actions-row {
+  padding: 8px 16px 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Common Button Styles for Actions */
+.action-left,
+.action-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn.round-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #444746;
+}
+
+.icon-btn.round-btn:hover {
+  background: #f0f4f9;
+  color: #1f1f1f;
+}
+
+.icon-btn.send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  color: #0b57d0;
+  /* Google Blue */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn.send-btn:hover {
+  background: #e8f0fe;
+}
+
+.tool-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  /* Pill shape */
+  border: none;
+  background: transparent;
+  color: #444746;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tool-btn:hover {
+  background: #f0f4f9;
+  color: #1f1f1f;
+}
+
+
+.input-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.action-left,
+.action-right {
+  display: flex;
+  gap: 8px;
+  color: #666;
+}
+
+.icon-btn {
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #5f6368;
+}
+
+.icon-btn:hover {
+  background: #f0f0f0;
+}
+
+.icon-btn.send-active {
+  color: var(--primary-color);
+  background: #e8f0fe;
+}
+
+/* Suggestion Chips */
+.suggestion-chips {
+  margin-top: 40px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.chip {
+  background: #f0f4f9;
+  padding: 10px 18px;
+  border-radius: 100px;
+  font-size: 0.9rem;
+  color: #444746;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.chip:hover {
+  background: #e1e5ea;
+}
+
+/* Chat Mode Styles */
+.chat-mode-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+}
+
+
+
+.chat-input-fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 0 40px 0;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+}
+
+/* Chat Input Wrapper - Gemini Style (Floating) */
+.chat-input-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  background: #ffffff;
+  /* White background */
+  /* White background */
+  border-radius: 28px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+  border: 2px solid #e0e0e0;
+  min-height: 120px;
+  /* Match hero input */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 1px 10px rgba(0, 0, 0, 0.05);
+}
+
+.chat-input-wrapper:focus-within {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.08);
+  /* Match hero input focus */
+  border-color: #d0d0d0;
+  background: white;
+}
+
+/* AI Mode Gradient Glow */
+.chat-input-wrapper.ai-mode-glow,
+.hero-input-container.ai-mode-glow {
+  border: 2px solid transparent;
+  background-image: linear-gradient(white, white),
+    linear-gradient(90deg, #4285f4, #9b72cb, #d96570);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 4px 20px rgba(66, 133, 244, 0.15);
+  /* Soft Blue Glow */
+}
+
+/* Enhance Focus in AI Mode */
+.chat-input-wrapper.ai-mode-glow:focus-within,
+.hero-input-container.ai-mode-glow:focus-within {
+  box-shadow: 0 8px 30px rgba(66, 133, 244, 0.25);
+}
+
+.input-content-area-chat {
+  padding: 20px 24px 8px 24px;
+  flex: 1;
+  display: flex;
+}
+
+/* Chat Input Field */
+.chat-input-field {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1rem;
+  color: #333;
+  padding: 0;
+  min-height: 24px;
+  line-height: 1.5;
+  resize: none;
+  overflow: hidden;
+  font-family: inherit;
+  display: block;
+  /* Ensure block for resize */
+}
+
+/* Reusing .input-actions-row, .action-left, .tool-btn, .icon-btn from hero section */
+/* but ensuring transparency/colors match chat context */
+
+.chat-input-wrapper .input-actions-row {
+  padding: 8px 16px 16px 16px;
+  /* Slightly tighter padding */
+}
+
+.chat-messages-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 120px 0 180px 0;
+  /* Top padding for logo, bottom for fixed input */
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Override message styles for chat mode to match screenshot */
+/* Override message styles for chat mode to match screenshot */
+.chat-mode-container .message {
+  max-width: 100%;
+  animation: none !important;
+  /* Force remove any entry animation */
+  transition: none !important;
+}
+
+.chat-mode-container .message-avatar {
+  animation: none !important;
+  transition: none !important;
+}
+
+.chat-mode-container .message.user {
+  display: flex;
+}
+
+.chat-mode-container .message.assistant .avatar {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.chat-mode-container .message.assistant .avatar svg {
+  color: #4285f4;
+  /* Gemini blue-ish star color */
+}
+
+/* Footer disclaimer */
+.chat-disclaimer {
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #888;
+  pointer-events: none;
+  z-index: 101;
+}
+
+/* Updated Chat Input Styles for Floating Textarea */
+.chat-input-field {
+  resize: none;
+  overflow: hidden;
+  font-family: inherit;
+  line-height: 1.5;
+  padding-top: 2px;
+  /* Center align with icons */
+}
+
+
+
+/* Refined Chat Input Styles per Request */
+
+
+
+
+.chat-input-field {
+  padding-top: 4px;
+  /* Align text vertically */
+}
+
+/* Polish: consistent logo placement and animation */
+/* Polish: consistent logo placement and animation */
+.chat-mode-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  /* animation: slideDownEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1); Removed global animation */
+}
+
+/* Ensure logo classes share exact positioning if possible, or override to match */
+/* Consolidated Chat Mode Logo */
+/* Consolidated Chat Mode Logo */
+.chat-mode-logo {
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  height: 60px;
+  width: auto;
+  z-index: 10;
+  cursor: pointer;
+}
+
+/* Chat Header Name (Friend Name) */
+.chat-header-name {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+  /* Match input/bubble padding if needed */
+  /* Flex layout for Right Alignment */
+  display: flex;
+  justify-content: flex-start;
+  /* Align to Left Line per user request */
+  align-items: center;
+  gap: 12px;
+
+  /* Fix overlap issue: Add background */
+  background-color: var(--bg-color);
+  /* Match page background */
+  /* OR use a subtle gradient mask if preferred, but solid is safer for overlap */
+
+  /* Ensure it has height to cover content */
+  height: 80px;
+  /* Match padding-top of scroll area */
+  top: 0;
+  /* move to top */
+  padding-top: 28px;
+  /* Push content down to original visual position */
+
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  z-index: 10;
+  /* animation removed per user request */
+  animation: none !important;
+  transition: none !important;
+  pointer-events: none;
+}
+
+.header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  animation: none !important;
+  transition: none !important;
+}
+
+.header-avatar svg {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Input Drop Animation */
+@keyframes inputDrop {
+  from {
+    transform: translateY(-30vh);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.chat-input-fixed-bottom {
+  /* Animation moved to .chat-entrance-animation to prevent replay */
+}
+
+.chat-entrance-animation {
+  animation: inputDrop 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chat-input-fixed-bottom.no-animation {
+  animation: none !important;
+  transition: none !important;
+}
+
+.chat-messages-scroll {
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Ensure textarea allows enough comfort for typing */
+/* Input Return Animation (Messenger -> AI Reset) */
+@keyframes slideUpReturn {
+  from {
+    transform: translateY(40vh);
+    /* Start from bottom as requested */
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.hero-input-container.animate-return {
+  animation: slideUpReturn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  /* CRITICAL FIX: Disable transition for layout properties during animation to prevent "Stretching" */
+  transition: transform 0.6s, opacity 0.6s !important;
+  /* Force fixed sizing during animation if possible, though 'min-height' usually doesn't animate unless explicit.
+     The issue is likely 'all' transition on base class conflicting with animation or keyframes.
+     By overriding transition to ONLY transform/opacity, we ignore height changes during this phase.
+  */
+}
+
+/* Ensure textarea allows enough comfort for typing */
+.chat-input-field {
+  line-height: 1.5;
+}
+
+/* Visual Corrections per Request */
+
+/* 1. Unify Logo Size */
+
+
+/* 2. Slimmer Chat Bubbles */
+.content {
+  padding: 10px 18px !important;
+  /* Reduced vertical padding from 14px */
+}
+
+/* 3. Input Text Alignment */
+.chat-input-field {
+  padding-top: 2px !important;
+  /* Reduce top padding to lift text slightly */
+  line-height: 1.4;
+  margin-top: -2px;
+  /* Fine-tune vertical position */
+}
+
+/* Final Visual Tweaks */
+
+/* 1. Hide Scrollbar */
+.chat-messages-scroll {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.chat-messages-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+/* 1. Logo "Shai" Text Styles */
+.logo-container {
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+}
+
+
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  font-family: 'Inter', sans-serif;
+  /* Or user requested font if any, Inter is default */
+}
+
+/* 2. User Bubble Color: Gray */
+.user .content {
+  background-color: #e5e7eb !important;
+  /* Gray */
+  color: #000000 !important;
+  /* Black text */
+  border: none !important;
+}
+
+
+
+
+
+/* Revert Logo Styles (No Text) */
+.logo-container {
+  display: none !important;
+}
+
+.logo-text {
+  display: none !important;
+}
+
+
+
+/* Enforce Identical Bubble Height (Padding) */
+.content,
+.user .content,
+.assistant .content {
+  padding: 10px 18px !important;
+  /* Ensure absolute consistency */
+  line-height: 1.5 !important;
+  min-height: 24px;
+  /* Ensure empty-ish lines don't collapse differently */
+}
+
+/* Make detailed mode logo clickable */
+
+
+.chat-mode-logo:hover {
+  opacity: 0.8;
+}
+
+/* Floating Friend List */
+.friend-list-container {
+  position: fixed;
+  right: 32px;
+  top: 24px;
+  bottom: 24px;
+  transform: none;
+  width: 260px;
+  height: auto;
+  min-height: 0;
+  /* Important for flex child scroll */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  /* Soft floating shadow */
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.friend-list-container:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
+  transform: none;
+}
+
+.friend-list-header {
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.friend-list-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.friend-count {
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.friend-list-scroll {
+  padding: 12px;
+  overflow-y: auto;
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+  /* Expand to fill remaining space */
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.friend-item:hover {
+  background: #f5f7fa;
+}
+
+.friend-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22c55e;
+  /* Green */
+  border: 2px solid white;
+}
+
+.friend-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.friend-status {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.friend-status.online {
+  color: #22c55e;
+}
+
+/* Scrollbar for friend list */
+.friend-list-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.friend-list-footer {
+  padding: 12px;
+  border-top: 1px solid #f0f0f0;
+  margin-top: auto;
+  background: rgba(255, 255, 255, 0.5);
+  /* Slight separation */
+}
+
+.friend-item.me-profile:hover {
+  background: #eef2ff;
+  /* Different hover color for self? */
+}
+/* =========================================
+   Reply Feature Styles (Added)
+   ========================================= */
+
+/* Message Container Adjustment for Reply Button */
+.message {
+    position: relative;
+    /* Ensure flex alignment for button */
+    align-items: center; 
+}
+
+/* Reply Quote Block (Inside Bubble) */
+.reply-quote-block {
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.05);
+    border-left: 3px solid rgba(0,0,0,0.2);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-width: 100%;
+}
+
+.reply-to-name {
+    font-weight: 600;
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-bottom: 2px;
+}
+
+.reply-to-content {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.85;
+}
+
+/* User Bubble Specifics (Blue/White) */
+.message.user .reply-quote-block {
+    background: rgba(255, 255, 255, 0.15);
+    border-left-color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.message.user .reply-to-name,
+.message.user .reply-to-content {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+/* Friend Bubble Specifics (Gray/Black) */
+.message.friend .reply-quote-block {
+    background: rgba(0, 0, 0, 0.04);
+    border-left-color: #ccc;
+    color: #444;
+}
+
+/* Reply Action Button (Hover) */
+.reply-action-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-left: 10px; /* Space from bubble */
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    transform: scale(0.9);
+}
+
+.reply-action-btn:hover {
+    background: #f8f9fa;
+    color: #333;
+    transform: scale(1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Show button on message hover */
+.message:hover .reply-action-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Absolute Safety for Horizontal Scrolling */
+body, #root, .chat-mode-container {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
+/* Ensure padding covers the negative positioning of reply buttons (-12px) */
+.chat-messages-scroll {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    padding-left: 20px !important; 
+    padding-right: 20px !important;
+    box-sizing: border-box !important;
+}
